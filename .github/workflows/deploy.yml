@@ -31,6 +31,8 @@ jobs:
 
       - name: Build frontend
         working-directory: client
+        env:
+         VITE_API_URL: https://resumeiq-resume-analyzer.onrender.com/api
         run: npm run build
 
       - name: Setup Pages
