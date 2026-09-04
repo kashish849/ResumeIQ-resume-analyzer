@@ -1,6 +1,10 @@
 import { Router } from 'express';
 import multer from 'multer';
 import path from 'path';
+import fs from 'fs';
+
+const uploadDir = path.resolve('uploads');
+fs.mkdirSync(uploadDir, { recursive: true });
 import {
   handleParseResume,
   handleAnalyze,
@@ -14,7 +18,7 @@ const router = Router();
 const MAX_FILE_SIZE = 8 * 1024 * 1024; // 8MB, matches spec
 
 const storage = multer.diskStorage({
-  destination: (req, file, cb) => cb(null, path.resolve('uploads')),
+  destination: (req, file, cb) => cb(null, uploadDir),
   filename: (req, file, cb) => {
     const safeName = file.originalname.replace(/[^a-zA-Z0-9.\-_]/g, '_');
     cb(null, `${Date.now()}-${safeName}`);
