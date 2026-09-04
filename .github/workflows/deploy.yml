@@ -4,6 +4,7 @@ on:
   push:
     branches:
       - main
+  workflow_dispatch:
 
 permissions:
   contents: read
@@ -21,7 +22,7 @@ jobs:
       - name: Setup Node
         uses: actions/setup-node@v4
         with:
-          node-version: 20
+          node-version: 24
           cache: npm
           cache-dependency-path: client/package-lock.json
 
@@ -32,8 +33,15 @@ jobs:
       - name: Build frontend
         working-directory: client
         env:
-         VITE_API_URL: https://resumeiq-resume-analyzer.onrender.com/api
+          VITE_API_URL: https://resumeiq-resume-analyzer.onrender.com/api
         run: npm run build
+
+      - name: Verify build
+        run: |
+          echo "Contents of client/dist:"
+          ls -la client/dist
+          echo "Checking index.html:"
+          head -20 client/dist/index.html
 
       - name: Setup Pages
         uses: actions/configure-pages@v5
@@ -41,7 +49,7 @@ jobs:
       - name: Upload website
         uses: actions/upload-pages-artifact@v3
         with:
-          path: './client/dist'
+          path: ./client/dist
 
   deploy:
     needs: build
